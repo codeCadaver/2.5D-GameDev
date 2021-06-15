@@ -4,52 +4,65 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    [SerializeField] private float _speed;
-    [SerializeField] private float _gravity;
-    private CharacterController _characterController;
-    private bool _canFall;
+    [SerializeField] private float _speed = 7;
+    [SerializeField] private float _gravity = 1;
+    [SerializeField] private float _jumpHeight = 40, _doubleJumpHeight = 50;
+
+    private bool _canDoubleJump = false;
+    private CharacterController _character;
+    private float _yVelocity;
+        
     // Start is called before the first frame update
     void Start()
     {
-        _characterController = GetComponent<CharacterController>();
-        StartCoroutine(FallDelayRoutine());
+        _character = GetComponent<CharacterController>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (_canFall)
-        {
-            CharacterMovement();
-        }
+        Movement();
     }
 
-    private void CharacterMovement()
+    private void Movement()
     {
         float h = Input.GetAxisRaw("Horizontal");
         Vector3 velocity = Vector3.right * (h * _speed);
-        
+            
         // Set Gravity
-        if (_characterController.isGrounded)
-        {
-            Debug.Log("Is Grounded");
-        }
-        else
-        {
-            velocity.y -= _gravity;
-        }
-        
+        Jump();
+            
         // Change Direction
         if (h != 0)
         {
-            _characterController.transform.rotation = Quaternion.Euler(new Vector3(0, -90 * Mathf.Sign(h), 0));
+            _character.transform.rotation = Quaternion.Euler(new Vector3(0, -90 * Mathf.Sign(h), 0));
         }
-        _characterController.Move(velocity * Time.deltaTime);
+
+        velocity.y = _yVelocity;
+        _character.Move(velocity * Time.deltaTime);
     }
 
-    IEnumerator FallDelayRoutine()
+    private void Jump()
     {
-        yield return new WaitForSeconds(1f);
-        _canFall = true;
+        if (_character.isGrounded)
+        {
+            _canDoubleJump = true;
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                _yVelocity = _jumpHeight;
+            }
+        }
+        else
+        {
+            if (_canDoubleJump)
+            {
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    _yVelocity += _doubleJumpHeight;
+                    _canDoubleJump = false;
+                }
+            }
+            _yVelocity -= _gravity;
+        }
     }
 }
