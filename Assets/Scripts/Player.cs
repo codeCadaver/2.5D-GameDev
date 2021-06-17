@@ -83,13 +83,19 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
         if (other.CompareTag("iBeam"))
         {
-            Debug.Log("Landed on iBeam");
-            transform.SetParent(other.transform, true);
+            _character.transform.SetParent(other.transform);
         }
     }
-    
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("iBeam"))
+        {
+            transform.parent = null;
+        }
+    }
 }
