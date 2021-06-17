@@ -97,7 +97,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c72d21bbfd276143b9245ce83457cba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _particles: {fileID: 2991493630390925511, guid: bc218da3f5438c44d9351c5b775b14a8, type: 3}
   _speed: -2
+  _value: 10
   _axis: {x: 0, y: 90, z: 0}
 --- !u!135 &3263050958643116442
 SphereCollider:
