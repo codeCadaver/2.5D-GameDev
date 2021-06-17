@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - iBeam
+  - DeathBox
   layers:
   - Default
   - TransparentFX

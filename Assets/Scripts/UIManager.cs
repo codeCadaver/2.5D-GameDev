@@ -9,7 +9,7 @@ public class UIManager : MonoBehaviour
     private static UIManager _instance;
     public static UIManager Instance => _instance;
 
-    [SerializeField] private Text _scoreText;
+    [SerializeField] private Text _scoreText, _livesText;
 
     public int Score { get; private set; } = 0;
     
@@ -36,13 +36,21 @@ public class UIManager : MonoBehaviour
         _scoreText.text = $"Score: {Score}";
     }
 
+    private void UpdateLives()
+    {
+        var lives = GameManager.Instance.Lives;
+        _livesText.text = $"Lives: {lives}";
+    }
+
     private void OnEnable()
     {
         Coin.OnCollected += UpdateScore;
+        Player.OnDeath += UpdateLives;
     }
 
     private void OnDisable()
     {
         Coin.OnCollected -= UpdateScore;
+        Player.OnDeath -= UpdateLives;
     }
 }

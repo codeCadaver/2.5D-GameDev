@@ -5,9 +5,12 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    public static Action OnDeath;
+
     [SerializeField] private float _speed = 7;
     [SerializeField] private float _gravity = 1;
     [SerializeField] private float _jumpHeight = 40, _doubleJumpHeight = 50;
+    [SerializeField] private Transform _start;
 
     private bool _canDoubleJump = false;
     private CharacterController _character;
@@ -80,6 +83,17 @@ public class Player : MonoBehaviour
             transform.Rotate(Vector3.right, amount, Space.Self);
             angle += amount;
             yield return new WaitForEndOfFrame();
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("DeathBox"))
+        {
+            OnDeath?.Invoke();
+            _character.enabled = false;
+            transform.position = _start.position;
+            _character.enabled = true;
         }
     }
 
