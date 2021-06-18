@@ -28,7 +28,6 @@ public class Coin : MonoBehaviour
 
     private void DestroyCoin()
     {
-        // TODO: add particle fx
         Instantiate(_particles, transform.position, Quaternion.identity);
         
         Destroy(this.gameObject);

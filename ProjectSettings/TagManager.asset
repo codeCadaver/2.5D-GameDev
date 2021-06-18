@@ -6,6 +6,7 @@ TagManager:
   tags:
   - iBeam
   - DeathBox
+  - Moving
   layers:
   - Default
   - TransparentFX

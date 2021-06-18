@@ -99,7 +99,7 @@ public class Player : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.CompareTag("iBeam"))
+        if (other.CompareTag("Moving"))
         {
             _character.transform.SetParent(other.transform);
         }
@@ -107,7 +107,7 @@ public class Player : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("iBeam"))
+        if (other.CompareTag("Moving"))
         {
             transform.parent = null;
         }

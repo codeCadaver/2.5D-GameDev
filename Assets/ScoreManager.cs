@@ -34,11 +34,11 @@ public class ScoreManager : MonoBehaviour
 
     private void OnEnable()
     {
-        Collectable.OnCoinCollected += UpdateScore;
+        Coin.OnCollected += UpdateScore;
     }
 
     private void OnDisable()
     {
-        Collectable.OnCoinCollected -= UpdateScore;
+        Coin.OnCollected -= UpdateScore;
     }
 }
