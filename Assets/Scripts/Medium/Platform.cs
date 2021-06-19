@@ -12,6 +12,7 @@ public class Platform : MonoBehaviour
     void FixedUpdate()
     {
         Move();
+        RotateElevator();
     }
     
     private Vector3 MoveHorizontal()
@@ -54,5 +55,24 @@ public class Platform : MonoBehaviour
                 _movingRight = true;
             }
         }
+    }
+    
+    private void RotateElevator()
+    {
+        // get slope
+        /* Slope = rotation2 - rotation1 / distance2 - distance1
+                    360 - 0 / End location - Start Location
+                    slope = 360 / _end.position - _start.position;
+                    
+                    rotation - startRotation = slope * (transform.position - _start.position)
+                    
+            // local rotation = m * Vector3.distance(transform.position - _start.position);
+         
+         */
+    
+        var m = 360 / Vector3.Distance(_end.position, _start.position);
+        var currentRotation = transform.localEulerAngles;
+        currentRotation.y = m * (Vector3.Distance(transform.position, _start.position));
+        transform.localEulerAngles = currentRotation;
     }
 }

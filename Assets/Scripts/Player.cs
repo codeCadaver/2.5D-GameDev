@@ -9,13 +9,16 @@ public class Player : MonoBehaviour
 
     [SerializeField] private float _speed = 7;
     [SerializeField] private float _gravity = 1;
-    [SerializeField] private float _jumpHeight = 40, _doubleJumpHeight = 50;
+    [SerializeField] private float _jumpHeight = 40, _doubleJumpHeight = 50, _wallJumpForce = 10;
     [SerializeField] private Transform _start;
 
     private bool _canDoubleJump = false;
+    private bool _canWallJump = false;
     private CharacterController _character;
     private float _yVelocity;
     private Quaternion _currentRotation;
+    private Vector3 _velocity;
+    private Vector3 _wallSurfaceNormal;
         
     // Start is called before the first frame update
     void Start()
@@ -32,20 +35,24 @@ public class Player : MonoBehaviour
     private void Movement()
     {
         float h = Input.GetAxisRaw("Horizontal");
-        Vector3 velocity = Vector3.right * (h * _speed);
             
         // Set Gravity
         Jump();
-            
-        // Change Direction
-        if (h != 0 && _character.isGrounded)
+
+        if (_character.isGrounded)
         {
-            _character.transform.rotation = Quaternion.Euler(new Vector3(0, -90 * Mathf.Sign(h), 0));
-            _currentRotation = _character.transform.rotation;
+            _velocity = Vector3.right * (h * _speed);
+            
+            // Change Direction
+            if (h != 0)
+            {
+                _character.transform.rotation = Quaternion.Euler(new Vector3(0, -90 * Mathf.Sign(h), 0));
+                _currentRotation = _character.transform.rotation;
+            }
         }
 
-        velocity.y = _yVelocity;
-        _character.Move(velocity * Time.deltaTime);
+        _velocity.y = _yVelocity;
+        _character.Move(_velocity * Time.deltaTime);
     }
 
     private void Jump()
@@ -54,6 +61,7 @@ public class Player : MonoBehaviour
         {
             transform.rotation = _currentRotation;
             _canDoubleJump = true;
+            _canWallJump = false;
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 _yVelocity = _jumpHeight;
@@ -68,6 +76,16 @@ public class Player : MonoBehaviour
                     _yVelocity += _doubleJumpHeight;
                     StartCoroutine(FlipRoutine());
                     _canDoubleJump = false;
+                }
+            }
+            if (_canWallJump)
+            {
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    _yVelocity = _doubleJumpHeight;
+                    _velocity = _wallSurfaceNormal * _speed;
+                    transform.localRotation = Quaternion.Inverse(transform.rotation);
+                    _canWallJump = false;
                 }
             }
             _yVelocity -= _gravity;
@@ -101,7 +119,7 @@ public class Player : MonoBehaviour
     {
         if (other.CompareTag("Moving"))
         {
-            _character.transform.SetParent(other.transform);
+            _character.transform.SetParent(other.transform, true);
         }
     }
 
@@ -111,5 +129,21 @@ public class Player : MonoBehaviour
         {
             transform.parent = null;
         }
+    }
+
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if (_character.isGrounded)
+        {
+            return;
+        }
+
+        if (hit.collider.CompareTag("Block"))
+        {
+            _canWallJump = true;
+            _canDoubleJump = false;
+            _wallSurfaceNormal = hit.normal;
+        }
+        
     }
 }
