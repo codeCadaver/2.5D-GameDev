@@ -8,6 +8,7 @@ TagManager:
   - DeathBox
   - Moving
   - Block
+  - Moveable
   layers:
   - Default
   - TransparentFX
